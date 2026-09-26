@@ -41,7 +41,7 @@ def main():
         print("Directory has been created.")
     copy_static_to_public(static_dir, doc_dir)
     template_path = os.path.join(basepath, "template.html")
-    generate_page_recursive(content_dir, template_path, doc_dir)
+    generate_page_recursive(content_dir, template_path, doc_dir, basepath)
     print("All webpages have been successfully generated. Launching local server now.")
 
 main()
