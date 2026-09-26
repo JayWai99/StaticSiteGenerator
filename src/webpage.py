@@ -10,7 +10,7 @@ def extract_title(markdown):
                 return line[2:].strip()
         raise Exception("No h1 header found")
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     md_text = ""
     template_text = ""
@@ -28,16 +28,16 @@ def generate_page(from_path, template_path, dest_path):
     if "{{ Content }}" in template_text:
         template_text = template_text.replace("{{ Content }}", html)
     if 'href="/' in template_text:
-        template_text = template_text.replace('href="/', 'href="{basepath}')
+        template_text = template_text.replace('href="/', f'href="{basepath}')
     if 'src="/' in template_text:
-        template_text = template_text.replace('src="/', 'src="{basepath}')
+        template_text = template_text.replace('src="/', f'src="{basepath}')
     with open(dest_path, 'w', encoding="utf-8") as file:
         # for line in template_lines:
         file.write(template_text)
     print("Webpage generation is complete. Launching local server now.")
 
 
-def generate_page_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_page_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     md_text = ""
     template_text = ""
     if os.path.exists(dir_path_content) == False:
@@ -52,11 +52,9 @@ def generate_page_recursive(dir_path_content, template_path, dest_dir_path):
         template = file.read()
         template_text = template_text + template
     dir_list = os.listdir(dir_path_content)
-    print(dir_list)
     if not dir_list:
         raise Exception(f"{dir_path_content} is empty. Exiting...")
     for item in dir_list:
-        print(item)
         dir_text = os.path.splitext(item)
         item_path = os.path.join(dir_path_content, item)
         if os.path.isfile(item_path) and dir_text[1] == ".md":
@@ -71,6 +69,10 @@ def generate_page_recursive(dir_path_content, template_path, dest_dir_path):
                 template_text = template_text.replace("{{ Title }}", title)
             if "{{ Content }}" in template_text:
                 template_text = template_text.replace("{{ Content }}", html)
+            if 'href="/' in template_text:
+                template_text = template_text.replace('href="/', f'href="{basepath}')
+            if 'src="/' in template_text:
+                template_text = template_text.replace('src="/', f'src="{basepath}')
             html_dir = os.path.join(dest_dir_path, "index.html")
             with open(html_dir, 'w', encoding="utf-8") as file:
                 file.write(template_text)
@@ -78,7 +80,5 @@ def generate_page_recursive(dir_path_content, template_path, dest_dir_path):
         if os.path.isdir(item_path):
             new_dest_dir_path = os.path.join(dest_dir_path, item)
             new_cont_dir_path = os.path.join(dir_path_content, item)
-            print(new_dest_dir_path)
-            print(new_cont_dir_path)
             os.mkdir(new_dest_dir_path)
             generate_page_recursive(new_cont_dir_path, template_path, new_dest_dir_path)
