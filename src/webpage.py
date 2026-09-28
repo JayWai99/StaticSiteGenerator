@@ -81,4 +81,4 @@ def generate_page_recursive(dir_path_content, template_path, dest_dir_path, base
             new_dest_dir_path = os.path.join(dest_dir_path, item)
             new_cont_dir_path = os.path.join(dir_path_content, item)
             os.mkdir(new_dest_dir_path)
-            generate_page_recursive(new_cont_dir_path, template_path, new_dest_dir_path)
+            generate_page_recursive(new_cont_dir_path, template_path, new_dest_dir_path, basepath)

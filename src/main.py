@@ -24,12 +24,13 @@ def main():
         basepath = sys.argv[1]
     else:
         basepath = "/"
-    # root_dir = os.getcwd()
-    content_dir = os.path.join(basepath, "content")
-    static_dir = os.path.join(basepath, "static")
+    print(basepath)
+    root_dir = os.getcwd()
+    content_dir = os.path.join(root_dir, "content")
+    static_dir = os.path.join(root_dir, "static")
     if os.path.exists(static_dir) == False:
         raise Exception("Static directory not detected, exiting.")
-    doc_dir = os.path.join(basepath, "doc")
+    doc_dir = os.path.join(root_dir, "docs")
     if os.path.exists(doc_dir):
         print("Doc directory detected.\nWiping all contents to create a fresh environment...")
         shutil.rmtree(doc_dir)
@@ -40,7 +41,7 @@ def main():
         os.mkdir(doc_dir)
         print("Directory has been created.")
     copy_static_to_public(static_dir, doc_dir)
-    template_path = os.path.join(basepath, "template.html")
+    template_path = os.path.join(root_dir, "template.html")
     generate_page_recursive(content_dir, template_path, doc_dir, basepath)
     print("All webpages have been successfully generated. Launching local server now.")
 
